@@ -8,6 +8,7 @@ use Prettus\Repository\Generators\MigrationGenerator;
 use Prettus\Repository\Generators\ModelGenerator;
 use Prettus\Repository\Generators\RepositoryEloquentGenerator;
 use Prettus\Repository\Generators\RepositoryInterfaceGenerator;
+use Prettus\Repository\Generators\ValidatorGenerator;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -85,10 +86,24 @@ class RepositoryCommand extends Command
             $this->generators->push($modelGenerator);
         }
 
-        $this->generators->push(new RepositoryInterfaceGenerator([
+        $interfaceGenerator = new RepositoryInterfaceGenerator([
             'name'  => $this->argument('name'),
             'force' => $this->option('force'),
-        ]));
+        ]);
+
+        if (!$this->option('skip-interface')) {
+            $this->generators->push($interfaceGenerator);
+        }
+
+        $validatorGenerator = new ValidatorGenerator([
+            'name' => $this->argument('name'),
+            'rules' => $this->option('rules'),
+            'force' => $this->option('force'),
+        ]);
+
+        if (!$this->option('skip-validator')) {
+            $this->generators->push($validatorGenerator);
+        }
 
         foreach ($this->generators as $generator) {
             $generator->run();
@@ -180,6 +195,20 @@ class RepositoryCommand extends Command
             ],
             [
                 'skip-model',
+                null,
+                InputOption::VALUE_NONE,
+                'Skip the creation of a model.',
+                null,
+            ],
+            [
+                'skip-interface',
+                null,
+                InputOption::VALUE_NONE,
+                'Skip the creation of a model.',
+                null,
+            ],
+            [
+                'skip-validator',
                 null,
                 InputOption::VALUE_NONE,
                 'Skip the creation of a model.',
