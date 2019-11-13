@@ -74,6 +74,7 @@ class RepositoryEloquentGenerator extends Generator
         return array_merge(parent::getReplacements(), [
             'fillable'      => $this->getFillable(),
             'use_validator' => $this->getValidatorUse(),
+            'return_validator' => $this->getValidatorReturn(),
             'validator'     => $this->getValidatorMethod(),
             'repository'    => $repository,
             'model'         => isset($this->options['model']) ? $this->options['model'] : ''
@@ -116,7 +117,14 @@ class RepositoryEloquentGenerator extends Generator
         return "use {$validator};";
     }
 
+    public function getValidatorReturn()
+    {
+        $validator = $this->getValidator();
+        $validator = str_replace(['\\', '/'], '\\\\', $validator);
 
+        return "return '{$validator}';";
+    }
+    
     public function getValidator()
     {
         $validatorGenerator = new ValidatorGenerator([
