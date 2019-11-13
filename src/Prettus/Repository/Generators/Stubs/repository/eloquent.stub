@@ -2,18 +2,16 @@
 
 $NAMESPACE$
 
+use $MODEL$;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
-use $REPOSITORY$
-use $MODEL$;
-$USE_VALIDATOR$
 
 /**
  * Class $CLASS$RepositoryEloquent.
  *
  * @package $NAMESPACE$
  */
-class $CLASS$RepositoryEloquent extends BaseRepository implements $CLASS$Repository
+class $CLASS$RepositoryEloquent extends BaseRepository
 {
     /**
      * Specify Model class name
@@ -35,4 +33,13 @@ class $CLASS$RepositoryEloquent extends BaseRepository implements $CLASS$Reposit
         $this->pushCriteria(app(RequestCriteria::class));
     }
     
+    /**
+     * Specify Validator class name
+     *
+     * @return mixed
+     */
+    public function validator()
+    {
+        $RETURN_VALIDATOR$
+    }
 }
