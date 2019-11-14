@@ -91,6 +91,7 @@ abstract class BaseRepository implements RepositoryInterface, RepositoryCriteria
         'getConnection',
         'findOrFail',
         'findMany',
+        'findOrNew',
     ];
     
     /**
