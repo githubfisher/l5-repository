@@ -1093,8 +1093,8 @@ abstract class BaseRepository implements RepositoryInterface, RepositoryCriteria
             return $this->parserResult($model);
         }
 
-        $method = 'scope' . ucfirst($method);
-        if ( ! method_exists($this->model, $method)) {
+        $scopeMethod = 'scope' . ucfirst($method);
+        if (method_exists($this->model, $scopeMethod)) {
             $this->model = $this->model->{$method}(...$arguments);
         }
 
