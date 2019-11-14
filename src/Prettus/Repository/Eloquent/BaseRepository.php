@@ -85,6 +85,15 @@ abstract class BaseRepository implements RepositoryInterface, RepositoryCriteria
     protected $scopeQuery = null;
 
     /**
+     * @var array 不需要查询条件的方法
+     */
+    protected $runStraight = [
+        'getConnection',
+        'findOrFail',
+        'findMany',
+    ];
+    
+    /**
      * @param Application $app
      */
     public function __construct(Application $app)
@@ -1067,5 +1076,27 @@ abstract class BaseRepository implements RepositoryInterface, RepositoryCriteria
         }
 
         return $result;
+    }
+    
+    public function __call($method, $arguments)
+    {
+        if (in_array($method, $this->runStraight)) {
+            $this->applyCriteria();
+            $this->applyScope();
+            $temporarySkipPresenter = $this->skipPresenter;
+            $this->skipPresenter(true);
+            $model = $this->model->{$method}(...$arguments);
+            $this->skipPresenter($temporarySkipPresenter);
+            $this->resetModel();
+
+            return $this->parserResult($model);
+        }
+
+        $method = 'scope' . ucfirst($method);
+        if ( ! method_exists($this->model, $method)) {
+            $this->model = $this->model->{$method}(...$arguments);
+        }
+
+        return $this;
     }
 }
