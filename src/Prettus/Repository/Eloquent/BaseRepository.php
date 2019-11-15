@@ -1094,7 +1094,7 @@ abstract class BaseRepository implements RepositoryInterface, RepositoryCriteria
         }
 
         $scopeMethod = 'scope' . ucfirst($method);
-        if (method_exists($this->model, $scopeMethod)) {
+        if (method_exists($this->model, $method) || method_exists($this->model, $scopeMethod)) {
             $this->model = $this->model->{$method}(...$arguments);
         }
 
