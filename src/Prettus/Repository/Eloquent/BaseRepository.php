@@ -95,6 +95,11 @@ abstract class BaseRepository implements RepositoryInterface, RepositoryCriteria
     ];
     
     /**
+     * @var array model拥有的方法集合
+     */
+    protected $funcs = null;
+    
+    /**
      * @param Application $app
      */
     public function __construct(Application $app)
@@ -105,6 +110,8 @@ abstract class BaseRepository implements RepositoryInterface, RepositoryCriteria
         $this->makePresenter();
         $this->makeValidator();
         $this->boot();
+        
+        $this->funcs = get_class_methods($this->model());
     }
 
     /**
@@ -1093,8 +1100,7 @@ abstract class BaseRepository implements RepositoryInterface, RepositoryCriteria
             return $this->parserResult($model);
         }
 
-        $scopeMethod = 'scope' . ucfirst($method);
-        if (method_exists($this->model, $method) || method_exists($this->model, $scopeMethod)) {
+        if (is_array($this->funcs) && (in_array($method, $this->funcs) || in_array($scope = 'scope' . ucfirst($method), $this->funcs))) {
             $this->model = $this->model->{$method}(...$arguments);
         }
 
